@@ -20,7 +20,7 @@ return new class extends Migration
             $table->double('size');
             $table->integer('bedrooms');
             $table->integer('bathrooms');
-            $table->string('description');
+            $table->text('description');
             $table->foreignId('category_id')->constrained();
             $table->foreignId('listing_type_id')->constrained();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

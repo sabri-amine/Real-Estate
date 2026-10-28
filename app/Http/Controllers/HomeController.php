@@ -10,10 +10,13 @@ class HomeController extends Controller
 {
     public function get()
     {
-        $listings = Proprety::with(['listingType', 'category', 'images'])->get();
-        $properties = Proprety::with('images')->get();
+        // Only show approved properties on home page
+        $properties = Proprety::with(['images', 'category', 'listingType'])
+            ->where('status', 'approved')
+            ->latest()
+            ->get();
         $categories = Category::all();
-        return view('welcome', compact('categories','properties','listings'));
+        return view('welcome', compact('categories', 'properties'));
     }
 
 

@@ -50,4 +50,29 @@ class User extends Authenticatable
     {
         return $this->hasMany(Proprety::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->exists();
+    }
+
+    public function propertyNotifications()
+    {
+        return $this->hasMany(PropertyNotification::class);
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->propertyNotifications()->unread();
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

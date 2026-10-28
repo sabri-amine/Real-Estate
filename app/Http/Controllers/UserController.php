@@ -49,7 +49,7 @@ class UserController extends Controller
                 'password' => Hash::make($request->password)
             ]);
 
-            return redirect('/login')->with('success', 'Registration successful. Please login.');
+            return redirect('/login')->with('success', 'Inscription réussie. Veuillez vous connecter.');
         } catch (\Throwable $th) {
             return redirect('/register')->with('error', $th->getMessage())->withInput();
         }
@@ -75,11 +75,16 @@ class UserController extends Controller
     {
         try {
             if (!Auth::attempt($request->only('email', 'password'))) {
-                return redirect('/login')->with('error', 'Invalid credentials')->withInput();
+                return redirect('/login')->with('error', 'Identifiants invalides')->withInput();
             }
-            
+
             session(['authenticated' => true]);
-            
+
+            // Redirect admin to dashboard, others to home
+            if (Auth::user()->hasRole('admin')) {
+                return redirect()->route('admin.dashboard');
+            }
+
             return redirect()->intended('/');
         } catch (\Throwable $th) {
             return redirect('/login')->with('error', $th->getMessage())->withInput();
@@ -94,9 +99,6 @@ class UserController extends Controller
 public function logoutUser(Request $request)
 {
     try {
-        // Revoke the current user's token
-        $request->user()->tokens()->delete();
-
         // Log the user out
         Auth::logout();
 
@@ -109,7 +111,7 @@ public function logoutUser(Request $request)
         // Redirect to the login view after logout
         return redirect()->route('login')->with([
             'status' => true,
-            'message' => 'User logged out successfully',
+            'message' => 'Utilisateur déconnecté avec succès',
         ]);
     } catch (\Throwable $th) {
         return redirect()->route('login')->with([

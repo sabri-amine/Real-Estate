@@ -19,12 +19,12 @@ class Authenticate
     {
         // Check if session variable exists and is true
         if (!session('authenticated')) {
-            return redirect('/login')->with('error', 'Unauthorized access');
+            return redirect('/login')->with('error', 'Accès non autorisé');
         }
 
         // Check if user is not authenticated
         if (!$request->user()) {
-            return redirect('/login')->with('error', 'Please log in');
+            return redirect('/login')->with('error', 'Veuillez vous connecter');
         }
         return $next($request);
     }

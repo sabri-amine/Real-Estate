@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Category;
+use App\Models\ListingType;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            RoleSeeder::class,
+            PropretySeeder::class,
         ]);
+
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        $categories = ['Apartment', 'Villa', 'Home', 'Office', 'Building', 'Townhouse'];
+        foreach ($categories as $cat) {
+            Category::firstOrCreate(['name' => $cat]);
+        }
+
+        $listingTypes = ['For Rent', 'For Sale'];
+        foreach ($listingTypes as $type) {
+            ListingType::firstOrCreate(['name' => $type]);
+        }
     }
 }
